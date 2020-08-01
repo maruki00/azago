@@ -31,3 +31,4 @@ go.work.sum
 # .idea/
 # .vscode/
 test.go
+*_test.go
