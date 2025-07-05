@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"maps"
 	"net"
 	"os"
+	"path"
 	"regexp"
 	"strings"
 )
+
 var _ = net.Listen
 var _ = os.Exit
 
@@ -43,12 +44,17 @@ func (resp *Response) Write(status int, body []byte) {
 	}
 	responseBody.WriteString("Content-Type: text/plain\r\n")
 	responseBody.WriteString(fmt.Sprintf("Content-Length: %d\r\n", lenght))
+	responseBody.WriteString("\r\n")
 	responseBody.Write(body)
 	resp.conn.Write([]byte(responseBody.String()))
 }
 
 func (resp *Response) SetHeaders(headers map[string]string) {
-	maps.Copy(headers, resp.r.Headers)
+	// maps.Copy(headers, resp.r.Headers)
+	for header, value := range headers {
+		resp.r.Headers[header] = value
+	}
+
 }
 
 type Request struct {
@@ -59,9 +65,22 @@ type Request struct {
 	Headers     map[string]string
 }
 
+func NewRequest() *Request {
+	return &Request{
+		Headers: make(map[string]string),
+	}
+}
+
+func (req *Request) isValidEndPoint(rgx string) bool {
+	regx, err := regexp.Compile(fmt.Sprintf("^%s$", rgx))
+	if err != nil {
+		return false
+	}
+	return regx.Match([]byte(req.EndPoint))
+}
 func RequestParser(conn net.Conn) (*Request, error) {
-	request := new(Request)
-	requestBuff := make([]byte, 1)
+	request := NewRequest()
+	requestBuff := make([]byte, 4096)
 	_, err := conn.Read(requestBuff)
 	if err != nil {
 		panic(err)
@@ -88,6 +107,12 @@ func RequestParser(conn net.Conn) (*Request, error) {
 	if len(requestInfo) > 1 {
 		for _, h := range requestInfo[1:] {
 			header := bytes.Split(h, []byte(":"))
+			if len(header) == 0 {
+				continue
+			}
+			if len(bytes.Trim(header[0], " ")) == 0 {
+				continue
+			}
 			if len(header) < 2 {
 				request.Headers[string(bytes.Trim(header[0], " "))] = ""
 				continue
@@ -103,24 +128,46 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	conn, err := listner.Accept()
-	if err != nil {
-		panic(err)
+	for {
+		conn, err := listner.Accept()
+		if err != nil {
+			panic(err)
+		}
+		go handelRequest(conn)
 	}
+}
+func handelRequest(conn net.Conn) {
 	request, err := RequestParser(conn)
 	if err != nil {
 		conn.Write(NOT_FOUND)
 		return
 	}
-fmt.Println("")
 	response := NewResponse(request, conn)
+	if request.EndPoint == "/" {
+		index(request, response)
+		return
+	}
+
 	if request.EndPoint == "/user-agent" {
-		panic(233)
 		userAgentReaderEndPoint(request, response)
 		return
 	}
-	response.Write(400, []byte(Statues[400]))
+
+	if request.isValidEndPoint("/echo/(.+)") {
+		echoEndPoint(request, response)
+		return
+	}
+
+	if request.isValidEndPoint("/files/(.+)") {
+		filesEndPoint(request, response)
+		return
+	}
+
+	response.Write(404, []byte(Statues[404]))
 	conn.Close()
+}
+func index(_ *Request, respone *Response) {
+	respone.Write(200, []byte(Statues[200]))
 }
 
 func userAgentReaderEndPoint(request *Request, respone *Response) {
@@ -130,11 +177,26 @@ func userAgentReaderEndPoint(request *Request, respone *Response) {
 	}
 	respone.Write(400, []byte(Statues[400]))
 }
+func echoEndPoint(request *Request, respone *Response) {
+	query := strings.Replace(request.EndPoint, "/echo/", "", 6)
+	respone.Write(200, []byte(query))
+}
+func filesEndPoint(request *Request, respone *Response) {
+	filePath := strings.Replace(request.EndPoint, "/files/", "", 6)
 
-func (req *Request) parseEndPoint(rgx string) bool {
-	regx, err := regexp.Compile(fmt.Sprintf("^%s$", rgx))
-	if err != nil {
-		return false
+	fullPath := path.Join("/tmp", filePath)
+	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
+		respone.Write(404, []byte(Statues[404]))
+		return
 	}
-	return regx.Match([]byte(req.EndPoint))
+	contet, err := os.ReadFile(fullPath)
+	if err != nil {
+		respone.Write(404, []byte(Statues[404]))
+		return
+	}
+	respone.SetHeaders(map[string]string{
+		"Content-Type": "application/octet-stream",
+	})
+	fmt.Println("hellow orld")
+	respone.Write(200, contet)
 }
