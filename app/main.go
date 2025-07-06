@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -15,8 +16,18 @@ var _ = net.Listen
 var _ = os.Exit
 
 var Statues = map[int]string{
+	//informational: 100's
+
+	//Success: 200's
 	200: "OK",
+	201: "Created",
+
+	//Redirect: 300's
+
+	//Client Error: 400's
 	404: "Not Found",
+
+	//Server Errors: 500's
 }
 
 const CRLF = "\r\n"
@@ -24,14 +35,14 @@ const CRLF = "\r\n"
 var NOT_FOUND = []byte("HTTP/1.1 404 Not Found\r\n\r\n")
 
 type Response struct {
-	r    *Request
+	*Request
 	conn net.Conn
 }
 
 func NewResponse(r *Request, conn net.Conn) *Response {
 	return &Response{
-		r:    r,
-		conn: conn,
+		Request: r,
+		conn:    conn,
 	}
 }
 
@@ -39,20 +50,26 @@ func (resp *Response) Write(status int, body []byte) {
 	lenght := len(body)
 	responseBody := strings.Builder{}
 	responseBody.WriteString(fmt.Sprintf("HTTP/1.1 %d %s\r\n", status, Statues[status]))
-	for header, value := range resp.r.Headers {
+	for header, value := range resp.Headers {
+		if header == "" || value == "" {
+			continue
+		}
 		responseBody.WriteString(fmt.Sprintf("%s: %s\r\n", header, value))
 	}
-	responseBody.WriteString("Content-Type: text/plain\r\n")
-	responseBody.WriteString(fmt.Sprintf("Content-Length: %d\r\n", lenght))
+	if _, ok := resp.Headers["Content-Type"]; !ok {
+		responseBody.WriteString("Content-Type: text/plain\r\n")
+	}
+	if _, ok := resp.Headers["Content-Length"]; !ok {
+		responseBody.WriteString(fmt.Sprintf("Content-Length: %d\r\n", lenght))
+	}
 	responseBody.WriteString("\r\n")
 	responseBody.Write(body)
 	resp.conn.Write([]byte(responseBody.String()))
 }
 
 func (resp *Response) SetHeaders(headers map[string]string) {
-	// maps.Copy(headers, resp.r.Headers)
 	for header, value := range headers {
-		resp.r.Headers[header] = value
+		resp.Headers[header] = value
 	}
 
 }
@@ -63,11 +80,13 @@ type Request struct {
 	EndPoint    string
 	HTTPVersion string
 	Headers     map[string]string
+	Body        []byte
 }
 
 func NewRequest() *Request {
 	return &Request{
 		Headers: make(map[string]string),
+		Body:    make([]byte, 0, 1024),
 	}
 }
 
@@ -78,6 +97,7 @@ func (req *Request) isValidEndPoint(rgx string) bool {
 	}
 	return regx.Match([]byte(req.EndPoint))
 }
+
 func RequestParser(conn net.Conn) (*Request, error) {
 	request := NewRequest()
 	requestBuff := make([]byte, 4096)
@@ -104,26 +124,29 @@ func RequestParser(conn net.Conn) (*Request, error) {
 	if rLineLenght >= 3 {
 		request.HTTPVersion = "HTTP/1.1" //string(requestLine[2])
 	}
+
 	if len(requestInfo) > 1 {
 		for _, h := range requestInfo[1:] {
 			header := bytes.Split(h, []byte(":"))
-			if len(header) == 0 {
-				continue
-			}
-			if len(bytes.Trim(header[0], " ")) == 0 {
-				continue
-			}
-			if len(header) < 2 {
-				request.Headers[string(bytes.Trim(header[0], " "))] = ""
+			if len(header) != 2 || len(bytes.Trim(header[0], " ")) == 0 || len(bytes.Trim(header[1], " ")) == 0 {
 				continue
 			}
 			request.Headers[string(bytes.Trim(header[0], " "))] = string(bytes.Trim(header[1], " "))
+		}
+
+		if request.Method == "POST" {
+			request.Body = requestInfo[len(requestInfo)-1]
 		}
 	}
 	return request, nil
 }
 
+var AbsPath = "/tmp/"
+
 func main() {
+	if len(os.Args) >= 3 {
+		AbsPath = os.Args[2]
+	}
 	listner, err := net.Listen("tcp", ":4221")
 	if err != nil {
 		panic(err)
@@ -136,12 +159,14 @@ func main() {
 		go handelRequest(conn)
 	}
 }
+
 func handelRequest(conn net.Conn) {
 	request, err := RequestParser(conn)
 	if err != nil {
 		conn.Write(NOT_FOUND)
 		return
 	}
+	defer conn.Close()
 	response := NewResponse(request, conn)
 	if request.EndPoint == "/" {
 		index(request, response)
@@ -158,14 +183,22 @@ func handelRequest(conn net.Conn) {
 		return
 	}
 
-	if request.isValidEndPoint("/files/(.+)") {
-		filesEndPoint(request, response)
+	if request.isValidEndPoint("/files/(.+)") && request.Method == "GET" {
+		fmt.Println("request get recieved")
+		getFilesEndPoint(request, response)
+		return
+	}
+
+	if request.isValidEndPoint("/files/(.+)") && request.Method == "POST" {
+		fmt.Println("request post recieved")
+		postFilesEndPoint(request, response)
 		return
 	}
 
 	response.Write(404, []byte(Statues[404]))
 	conn.Close()
 }
+
 func index(_ *Request, respone *Response) {
 	respone.Write(200, []byte(Statues[200]))
 }
@@ -177,14 +210,16 @@ func userAgentReaderEndPoint(request *Request, respone *Response) {
 	}
 	respone.Write(400, []byte(Statues[400]))
 }
+
 func echoEndPoint(request *Request, respone *Response) {
 	query := strings.Replace(request.EndPoint, "/echo/", "", 6)
 	respone.Write(200, []byte(query))
 }
-func filesEndPoint(request *Request, respone *Response) {
+
+func getFilesEndPoint(request *Request, respone *Response) {
 	filePath := strings.Replace(request.EndPoint, "/files/", "", 6)
 
-	fullPath := path.Join("/tmp", filePath)
+	fullPath := path.Join(AbsPath, filePath)
 	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
 		respone.Write(404, []byte(Statues[404]))
 		return
@@ -197,6 +232,24 @@ func filesEndPoint(request *Request, respone *Response) {
 	respone.SetHeaders(map[string]string{
 		"Content-Type": "application/octet-stream",
 	})
-	fmt.Println("hellow orld")
 	respone.Write(200, contet)
+}
+
+func postFilesEndPoint(request *Request, respone *Response) {
+	os.Mkdir(AbsPath, os.ModePerm)
+	filePath := strings.Replace(request.EndPoint, "/files/", "", 6)
+	fullPath := path.Join(AbsPath, filePath)
+	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
+		os.Remove(fullPath)
+	}
+	file, err := os.Create(fullPath)
+	if err != nil {
+		respone.Write(404, []byte(Statues[404]))
+		return
+	}
+	_, _ = file.Write(request.Body)
+	respone.SetHeaders(map[string]string{
+		"Content-Length": strconv.Itoa(len(request.Body)),
+	})
+	respone.Write(201, []byte(""))
 }
