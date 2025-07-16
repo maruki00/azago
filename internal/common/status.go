@@ -1,4 +1,4 @@
-package main
+package common
 
 
 var Statues = map[int]string{
@@ -75,11 +75,3 @@ var Statues = map[int]string{
 		511: "Network Authentication Required",
 }
 
-
-const CRLF = "\r\n"
-
-var responses = map[string][]byte {
-	"OK" : []byte("HTTP/1.1 200 OK\r\n\r\n"),
-	"NOT_FOUND" : []byte("HTTP/1.1 404 Not Found\r\n\r\n"),
-}
-var AbsPath = "/tmp/"
