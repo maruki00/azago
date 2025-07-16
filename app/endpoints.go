@@ -66,3 +66,7 @@ func postFilesEndPoint(request *Request, respone *Response) {
 	})
 	respone.Write(201, request.Body)
 }
+
+func gzipEndPoint(request *Request, respone *Response) {
+	respone.Write(200, []byte{})
+}
