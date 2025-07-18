@@ -4,44 +4,46 @@ import (
 	"fmt"
 	"net"
 	"strings"
+
+	"github.com/maruki00/zenithgo/internal/common"
+	"github.com/maruki00/zenithgo/internal/http/request"
 )
 
 type Response struct {
-	*Request
+	*request.Request
 	conn net.Conn
 }
 
-func NewResponse(r *Request, conn net.Conn) *Response {
+func NewResponse(r *request.Request, conn net.Conn) *Response {
 	return &Response{
 		Request: r,
 		conn:    conn,
 	}
 }
 
-func (resp *Response) Write(status int, body []byte) {
+func (_this *Response) Write(status int, body []byte) {
 	lenght := len(body)
 	responseBody := strings.Builder{}
-	responseBody.WriteString(fmt.Sprintf("HTTP/1.1 %d %s\r\n", status, Statues[status]))
-	for header, value := range resp.Headers {
+	responseBody.WriteString(fmt.Sprintf("HTTP/1.1 %d %s\r\n", status, common.Statues[status]))
+	for header, value := range _this.Headers {
 		if header == "" || value == "" {
 			continue
 		}
 		responseBody.WriteString(fmt.Sprintf("%s: %s\r\n", header, value))
 	}
-	if _, ok := resp.Headers["Content-Type"]; !ok {
+	if _, ok := _this.Headers["Content-Type"]; !ok {
 		responseBody.WriteString("Content-Type: text/plain\r\n")
 	}
-	if _, ok := resp.Headers["Content-Length"]; !ok {
+	if _, ok := _this.Headers["Content-Length"]; !ok {
 		responseBody.WriteString(fmt.Sprintf("Content-Length: %d\r\n", lenght))
 	}
 	responseBody.WriteString("\r\n")
 	responseBody.Write(body)
-	resp.conn.Write([]byte(responseBody.String()))
+	_this.conn.Write([]byte(responseBody.String()))
 }
 
-func (resp *Response) SetHeaders(headers map[string]string) {
+func (_this *Response) SetHeaders(headers map[string]string) {
 	for header, value := range headers {
-		resp.Headers[header] = value
+		_this.Headers[header] = value
 	}
-
 }
