@@ -8,6 +8,10 @@ import (
 	"io"
 	"net"
 	"regexp"
+
+	"github.com/eapache/go-resiliency/breaker"
+	"github.com/maruki00/zenithgo/internal/common"
+	readerPkg "github.com/maruki00/zenithgo/internal/pkg/reader"
 )
 
 type Request struct {
@@ -34,26 +38,20 @@ func (req *Request) isValidEndPoint(rgx string) bool {
 	return regx.Match([]byte(req.EndPoint))
 }
 
-
-func RequestParser(conn net.Conn) (*Request, error) {
-
-	// Accept-Encoding
-	// Content-Encoding
-
+func (_this*Request) RequestParser(conn net.Conn) (*Request, error) {	
 	request := NewRequest()
-	requestBuff := make([]byte, 4096)
-	_, err := conn.Read(requestBuff)
-	if err != nil {
-		panic(err)
-	}
-	requestInfo := bytes.Split(requestBuff, []byte(CRLF))
+	requestBuff := readerPkg.Read(conn)
+	
+	requestInfo := bytes.Split(requestBuff, []byte(common.CRLF))
 	if len(requestInfo) == 0 {
 		return nil, errors.New("request is empty")
 	}
+
 	requestLine := bytes.Split(requestInfo[0], []byte(" "))
 	if len(requestLine) == 0 {
 		return nil, errors.New("invalide request line")
 	}
+
 	rLineLenght := len(requestLine)
 	if rLineLenght >= 1 {
 		request.Method = string(requestLine[0])
@@ -64,6 +62,7 @@ func RequestParser(conn net.Conn) (*Request, error) {
 	if rLineLenght >= 3 {
 		request.HTTPVersion = string(requestLine[2])
 	}
+	
 	if len(requestInfo) > 1 {
 		for _, h := range requestInfo[1:] {
 			header := bytes.Split(h, []byte(":"))
