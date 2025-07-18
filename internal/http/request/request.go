@@ -2,15 +2,13 @@ package request
 
 import (
 	"bytes"
-	"compress/gzip"
 	"errors"
 	"fmt"
-	"io"
 	"net"
 	"regexp"
 
-	"github.com/eapache/go-resiliency/breaker"
 	"github.com/maruki00/zenithgo/internal/common"
+	gzipPkg "github.com/maruki00/zenithgo/internal/pkg/gzip"
 	readerPkg "github.com/maruki00/zenithgo/internal/pkg/reader"
 )
 
@@ -38,59 +36,52 @@ func (req *Request) isValidEndPoint(rgx string) bool {
 	return regx.Match([]byte(req.EndPoint))
 }
 
-func (_this*Request) RequestParser(conn net.Conn) (*Request, error) {	
-	request := NewRequest()
+func (_this *Request) RequestParser(conn net.Conn) (*Request, error) {
 	requestBuff := readerPkg.Read(conn)
-	
 	requestInfo := bytes.Split(requestBuff, []byte(common.CRLF))
 	if len(requestInfo) == 0 {
 		return nil, errors.New("request is empty")
 	}
-
 	requestLine := bytes.Split(requestInfo[0], []byte(" "))
 	if len(requestLine) == 0 {
 		return nil, errors.New("invalide request line")
 	}
-
 	rLineLenght := len(requestLine)
 	if rLineLenght >= 1 {
-		request.Method = string(requestLine[0])
+		_this.Method = string(requestLine[0])
 	}
 	if rLineLenght >= 2 {
-		request.EndPoint = string(requestLine[1])
+		_this.EndPoint = string(requestLine[1])
 	}
 	if rLineLenght >= 3 {
-		request.HTTPVersion = string(requestLine[2])
+		_this.HTTPVersion = string(requestLine[2])
 	}
-	
-	if len(requestInfo) > 1 {
-		for _, h := range requestInfo[1:] {
-			header := bytes.Split(h, []byte(":"))
-			if len(header) != 2 || len(bytes.Trim(header[0], " ")) == 0 || len(bytes.Trim(header[1], " ")) == 0 {
-				continue
-			}
-			request.Headers[string(bytes.Trim(header[0], " "))] = string(bytes.Trim(header[1], " "))
+	var header [][]byte
+	for _, h := range requestInfo[1:] {
+		header = bytes.Split(h, []byte(":"))
+		if len(header) != 2 || len(bytes.Trim(header[0], " ")) == 0 || len(bytes.Trim(header[1], " ")) == 0 {
+			continue
 		}
-		if request.Method == "POST" {
-			nullIndex := bytes.IndexByte(requestInfo[len(requestInfo)-1], '\x00')
-			if nullIndex == -1 {
-				nullIndex = len(requestInfo[len(requestInfo)-1])
-			}
-			body := requestInfo[len(requestInfo)-1][:nullIndex]
+		_this.Headers[string(bytes.Trim(header[0], " "))] = string(bytes.Trim(header[1], " "))
+	}
+	if _this.Method == "POST" {
+		nullIndex := bytes.IndexByte(requestInfo[len(requestInfo)-1], '\x00')
+		if nullIndex == -1 {
+			nullIndex = len(requestInfo[len(requestInfo)-1])
+		}
+		body := requestInfo[len(requestInfo)-1][:nullIndex]
 
-			if _, ok := request.Headers["Accept-Encoding"]; ok {
-				cmps, err := Decompress(body)
-				if err != nil {
-					return nil, err
-				}
-				request.Body = cmps
-				request.Headers["Content-Encoding"] = "gzip"
-			} else {
-
-				request.Body = body 				
-				fmt.Println(string(request.Body))
+		if _, ok := _this.Headers["Accept-Encoding"]; ok {
+			body, err := gzipPkg.Decompress(body)
+			if err != nil {
+				return nil, err
 			}
+			_this.Body = body
+			_this.Headers["Content-Encoding"] = "gzip"
+		} else {
+			_this.Body = body
 		}
 	}
-	return request, nil
+	return _this, nil
 }
+
