@@ -12,6 +12,7 @@ type HttpMiddleware func()
 type Route struct {
 	Handler HttpHandler
 	Method string
+	Params map[string]any
 	Middlewares []HttpMiddleware
 }
 type Routes map[string]*Route
@@ -44,3 +45,4 @@ func (_this *Router) POST(pattern string, handler HttpHandler, middlewares ...Ht
 func (_this *Router) GET(pattern string, handler HttpHandler, middlewares ...HttpMiddleware) {
 	_this.Add("GET", pattern , handler, middlewares)
 }
+
