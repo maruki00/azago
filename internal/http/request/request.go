@@ -34,30 +34,6 @@ func (req *Request) isValidEndPoint(rgx string) bool {
 	return regx.Match([]byte(req.EndPoint))
 }
 
-func Decompress(body []byte) ([]byte, error) {
-	reader, err := gzip.NewReader(bytes.NewReader(body))
-	if err != nil {
-		return nil, err
-	}
-	defer reader.Close()
-
-	decompressedData, err := io.ReadAll(reader)
-	if err != nil {
-		return nil, fmt.Errorf("error reading decompressed data: %s", err.Error())
-	}
-	return decompressedData, nil
-}
-
-func Compress(body []byte) ([]byte, error) {
-	var buff bytes.Buffer
-	writer := gzip.NewWriter(&buff)
-	defer writer.Close()
-	_, err := writer.Write(body)
-	if err != nil {
-		return []byte{}, err
-	}
-	return buff.Bytes(), nil
-}
 
 func RequestParser(conn net.Conn) (*Request, error) {
 

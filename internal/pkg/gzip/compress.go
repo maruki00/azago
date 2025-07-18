@@ -1,0 +1,3 @@
+package gzipPkg
+
+func 
