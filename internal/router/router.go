@@ -1,12 +1,10 @@
-// this is just a simple router 
+// this is just a simple router
 // missing groupes and many other stuffs
 // middlewares by groups ...
-// 
 package router
 
-import (
-	"github.com/maruki00/zenithgo/internal/request"
-)
+import "github.com/maruki00/zenithgo/internal/http/request"
+
 type HttpHandler func(*request.Request, *any)
 type HttpMiddleware func()
 type Route struct {
