@@ -8,8 +8,8 @@ import (
 	"regexp"
 
 	"github.com/maruki00/zenithgo/internal/common"
-	gzipPkg "github.com/maruki00/zenithgo/internal/pkg/gzip"
-	readerPkg "github.com/maruki00/zenithgo/internal/pkg/reader"
+	gzipPkg "github.com/maruki00/zenithgo/pkg/gzip"
+	readerPkg "github.com/maruki00/zenithgo/pkg/reader"
 )
 
 type Request struct {

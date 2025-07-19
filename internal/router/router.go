@@ -40,9 +40,9 @@ func (_this*Router) Add(method string, pattern string, handler HttpHandler, midd
 	}
 }
 func (_this *Router) POST(pattern string, handler HttpHandler, middlewares ...HttpMiddleware) {
-	_this.Add("POST", pattern , handler, ...middlewares)
+	_this.Add("POST", pattern , handler, middlewares...)
 }
 func (_this *Router) GET(pattern string, handler HttpHandler, middlewares ...HttpMiddleware) {
-	_this.Add("GET", pattern , handler, middlewares)
+	_this.Add("GET", pattern , handler, middlewares...)
 }
 
