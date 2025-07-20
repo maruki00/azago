@@ -14,11 +14,13 @@ import (
 )
 
 type Server struct {
-	router.Router
+	*router.Router
 }
 
 func New() *Server {
-	return &Server{}
+	return &Server{
+		Router: router.NewRouter(),
+	}
 }
 
 func (_this *Server) Run(addr string) {
@@ -36,6 +38,7 @@ func (_this *Server) Run(addr string) {
 	}
 }
 
+
 func (_this *Server) HandleRequest(conn net.Conn) {
 	start := time.Now()
 	defer conn.Close()
@@ -46,7 +49,8 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 	}
 
 	response := response.NewResponse(request, conn)
-	fmt.Println(_this.GetRoutes())
+	routes := _this.GetRoutes())
+
 	response.Write(200, []byte("hello worlld"))
 	logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
 }
