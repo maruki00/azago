@@ -3,6 +3,8 @@ package server
 import (
 	"net"
 
+	"github.com/maruki00/zenithgo/internal/common"
+	"github.com/maruki00/zenithgo/internal/http/request"
 	"github.com/maruki00/zenithgo/internal/router"
 )
 
@@ -29,9 +31,9 @@ func (_this *Server) Run(addr string) {
 }
 
 func (_this *Server) NewRequest(conn net.Conn) {
-	request, err := RequestParser(conn)
-	if err != nil {
-		conn.Write(NOT_FOUND)
+	request := request.NewRequest(conn)
+	if request == nil {
+		conn.Write([]byte(common.INTERNAL_ERROR))
 		return
 	}
 	defer conn.Close()
