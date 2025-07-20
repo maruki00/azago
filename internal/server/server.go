@@ -2,7 +2,9 @@ package server
 
 import (
 	"fmt"
+	"log/slog"
 	"net"
+	"time"
 
 	"github.com/maruki00/zenithgo/internal/common"
 	"github.com/maruki00/zenithgo/internal/http/request"
@@ -19,6 +21,7 @@ func New() *Server {
 }
 
 func (_this *Server) Run(addr string) {
+	slog.Info("Server start at", "addr ", addr)
 	listner, err := net.Listen("tcp", addr)
 	if err != nil {
 		panic(err)
@@ -33,15 +36,15 @@ func (_this *Server) Run(addr string) {
 }
 
 func (_this *Server) NewRequest(conn net.Conn) {
+	start := time.Now()
 	defer conn.Close()
-	request := request.NewRequest(conn)
-	if request == nil {
-		conn.Write([]byte(common.INTERNAL_ERROR))
-		return
-	}
-	response := response.NewResponse(request, conn)
-	
-
-	response.Write(404, []byte(Statues[404]))
+	go func() {
+		request := request.NewRequest(conn)
+		if request == nil {
+			conn.Write([]byte(common.INTERNAL_ERROR))
+			return
+		}
+		_ = response.NewResponse(request, conn)
+	}()
+	slog.Info("request", "spend", time.Since(start).Nanoseconds(),  "from", conn.LocalAddr().String())
 }
-
