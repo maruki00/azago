@@ -32,14 +32,13 @@ func (_this *Server) Run(addr string) {
 		if err != nil {
 			panic(err)
 		}
-		_this.NewRequest(conn)
+		go _this.NewRequest(conn)
 	}
 }
 
 func (_this *Server) NewRequest(conn net.Conn) {
 	start := time.Now()
 	defer conn.Close()
-	go func() {
 		request := request.NewRequest(conn)
 		if request == nil {
 			conn.Write([]byte(common.INTERNAL_ERROR))
@@ -51,6 +50,4 @@ func (_this *Server) NewRequest(conn net.Conn) {
 		fmt.Printf("%+v", request)
 		response.Write(200, []byte("hello worlld"))
 		logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
-
-	}()
 }

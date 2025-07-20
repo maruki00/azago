@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"net"
-	"regexp"
 
 	"github.com/maruki00/zenithgo/internal/common"
 	gzipPkg "github.com/maruki00/zenithgo/pkg/gzip"
-	readerPkg "github.com/maruki00/zenithgo/pkg/reader"
 )
 
 type Request struct {
@@ -26,22 +25,31 @@ func NewRequest(conn net.Conn) *Request {
 		Headers: make(map[string]string),
 		Body:    make([]byte, 0),
 	}
-	if err := req.RequestParser(conn); err !=nil{
+	if err := req.RequestParser(conn); err != nil {
 		return nil
 	}
 	return req
 }
 
-func (_this *Request) RequestParser(conn net.Conn)  error {
-	requestBuff := readerPkg.Read(conn)
+func (_this *Request) RequestParser(conn net.Conn) error {
+	requestBuff, err := io.ReadAll(conn)
+	if err != nil {
+		panic(err)
+		return err
+	}
+
+	fmt.Println(string(requestBuff))
+
 	requestInfo := bytes.Split(requestBuff, []byte(common.CRLF))
 	if len(requestInfo) == 0 {
 		return errors.New("request is empty")
 	}
 	requestLine := bytes.Split(requestInfo[0], []byte(" "))
 	if len(requestLine) == 0 {
-		return  errors.New("invalide request line")
+		return errors.New("invalide request line")
 	}
+
+	fmt.Println(requestInfo)
 	rLineLenght := len(requestLine)
 	if rLineLenght >= 1 {
 		_this.Method = string(requestLine[0])
@@ -70,7 +78,7 @@ func (_this *Request) RequestParser(conn net.Conn)  error {
 		if _, ok := _this.Headers["Accept-Encoding"]; ok {
 			body, err := gzipPkg.Decompress(body)
 			if err != nil {
-				return  err
+				return err
 			}
 			_this.Body = body
 			_this.Headers["Content-Encoding"] = "gzip"
@@ -78,6 +86,5 @@ func (_this *Request) RequestParser(conn net.Conn)  error {
 			_this.Body = body
 		}
 	}
-	return  nil
+	return nil
 }
-
