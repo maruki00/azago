@@ -31,11 +31,11 @@ func (_this *Server) Run(addr string) {
 		if err != nil {
 			panic(err)
 		}
-		go _this.NewRequest(conn)
+		go _this.HandleRequest(conn)
 	}
 }
 
-func (_this *Server) NewRequest(conn net.Conn) {
+func (_this *Server) HandleRequest(conn net.Conn) {
 	start := time.Now()
 	defer conn.Close()
 	request := request.NewRequest(conn)
