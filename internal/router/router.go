@@ -4,6 +4,7 @@
 package router
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/maruki00/zenithgo/internal/http/request"
@@ -53,9 +54,10 @@ func (_this *Router) Add(method string, pattern string, handler HttpHandler, mid
 		Middlewares: middle_wares,
 		Params: make(map[string]any),
 	}
-
 	parts := strings.Split(pattern, "/")
 	for i,part := range parts{
+		fmt.Println(part)
+		continue
 		if []rune(part)[0] != ':' {
 			continue	
 		}

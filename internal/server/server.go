@@ -38,7 +38,6 @@ func (_this *Server) Run(addr string) {
 	}
 }
 
-
 func (_this *Server) HandleRequest(conn net.Conn) {
 	start := time.Now()
 	defer conn.Close()
@@ -49,8 +48,10 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 	}
 
 	response := response.NewResponse(request, conn)
-	routes := _this.GetRoutes())
-
+	routes := _this.GetRoutes()
+	for k, r := range routes {
+		fmt.Printf("route : %s, %+v", k, r)
+	}
 	response.Write(200, []byte("hello worlld"))
 	logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
 }
