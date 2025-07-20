@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"io"
-	"net"
 )
 
 func Read(reader io.Reader) ([]byte, error) {

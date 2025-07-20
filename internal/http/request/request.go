@@ -1,10 +1,8 @@
 package request
 
 import (
-	"bufio"
 	"bytes"
 	"errors"
-	"fmt"
 	"net"
 
 	"github.com/maruki00/zenithgo/internal/common"
@@ -32,14 +30,11 @@ func NewRequest(conn net.Conn) *Request {
 	return req
 }
 
-
 func (_this *Request) RequestParser(conn net.Conn) error {
 	requestBuff, err := readerPkg.ReadUntil(conn, []byte("\r\n\r\n"))
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(requestBuff))
 
 	requestInfo := bytes.Split(requestBuff, []byte(common.CRLF))
 	if len(requestInfo) == 0 {
@@ -50,7 +45,6 @@ func (_this *Request) RequestParser(conn net.Conn) error {
 		return errors.New("invalide request line")
 	}
 
-	fmt.Println(requestInfo)
 	rLineLenght := len(requestLine)
 	if rLineLenght >= 1 {
 		_this.Method = string(requestLine[0])

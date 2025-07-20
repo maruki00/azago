@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net"
 	"time"
 
@@ -45,17 +44,8 @@ func (_this *Server) NewRequest(conn net.Conn) {
 		return
 	}
 
-	body := ""
-	fmt.Fprintf(conn, "HTTP/1.1 200 OK\r\n")
-	fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
-	fmt.Fprintf(conn, "Content-Type: text/plain\r\n")
-	fmt.Fprintf(conn, "\r\n")
-	fmt.Fprintf(conn, body)
-
-	return
 	response := response.NewResponse(request, conn)
 
-	fmt.Printf("%+v", request)
 	response.Write(200, []byte("hello worlld"))
 	logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
 }
