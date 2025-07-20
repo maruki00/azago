@@ -9,6 +9,7 @@ import (
 	"github.com/maruki00/zenithgo/internal/http/request"
 	"github.com/maruki00/zenithgo/internal/http/response"
 	"github.com/maruki00/zenithgo/internal/router"
+	logPkg "github.com/maruki00/zenithgo/pkg/log"
 	timePkg "github.com/maruki00/zenithgo/pkg/time"
 )
 
@@ -21,7 +22,7 @@ func New() *Server {
 }
 
 func (_this *Server) Run(addr string) {
-	slog.Info("Server start at", "addr ", addr)
+	logPkg.Log("Server start at", "addr ", addr)
 	listner, err := net.Listen("tcp", addr)
 	if err != nil {
 		panic(err)
