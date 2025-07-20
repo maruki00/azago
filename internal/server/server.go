@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"log/slog"
 	"net"
 	"time"
@@ -47,5 +46,5 @@ func (_this *Server) NewRequest(conn net.Conn) {
 		}
 		_ = response.NewResponse(request, conn)
 	}()
-	slog.Info("request", "spend",timePkg.Since(start). ,  "from", conn.LocalAddr().String())
+	slog.Info("request", "spend", timePkg.Since(start), "from", conn.LocalAddr().String())
 }
