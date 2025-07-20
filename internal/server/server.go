@@ -10,6 +10,7 @@ import (
 	"github.com/maruki00/zenithgo/internal/http/request"
 	"github.com/maruki00/zenithgo/internal/http/response"
 	"github.com/maruki00/zenithgo/internal/router"
+	timePkg "github.com/maruki00/zenithgo/pkg/time"
 )
 
 type Server struct {
@@ -46,5 +47,5 @@ func (_this *Server) NewRequest(conn net.Conn) {
 		}
 		_ = response.NewResponse(request, conn)
 	}()
-	slog.Info("request", "spend", time.Since(start).Nanoseconds(),  "from", conn.LocalAddr().String())
+	slog.Info("request", "spend",timePkg.Since(start). ,  "from", conn.LocalAddr().String())
 }
