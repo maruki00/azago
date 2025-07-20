@@ -45,7 +45,10 @@ func (_this *Server) NewRequest(conn net.Conn) {
 			conn.Write([]byte(common.INTERNAL_ERROR))
 			return
 		}
-		_ = response.NewResponse(request, conn)
+		response := response.NewResponse(request, conn)
+
+
+		response.Write(200, []byte("hello worlld"))
 	}()
 	slog.Info("request", "spend", timePkg.Since(start), "from", conn.LocalAddr().String())
 }
