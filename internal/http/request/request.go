@@ -21,11 +21,15 @@ type Request struct {
 	Body        []byte
 }
 
-func NewRequest() *Request {
-	return &Request{
+func NewRequest(conn net.Conn) *Request {
+	req := &Request{
 		Headers: make(map[string]string),
 		Body:    make([]byte, 0),
 	}
+	if err := req.RequestParser(conn); err !=nil{
+		return nil
+	}
+	return req
 }
 
 func (req *Request) isValidEndPoint(rgx string) bool {
@@ -36,15 +40,15 @@ func (req *Request) isValidEndPoint(rgx string) bool {
 	return regx.Match([]byte(req.EndPoint))
 }
 
-func (_this *Request) RequestParser(conn net.Conn) (*Request, error) {
+func (_this *Request) RequestParser(conn net.Conn)  error {
 	requestBuff := readerPkg.Read(conn)
 	requestInfo := bytes.Split(requestBuff, []byte(common.CRLF))
 	if len(requestInfo) == 0 {
-		return nil, errors.New("request is empty")
+		return errors.New("request is empty")
 	}
 	requestLine := bytes.Split(requestInfo[0], []byte(" "))
 	if len(requestLine) == 0 {
-		return nil, errors.New("invalide request line")
+		return  errors.New("invalide request line")
 	}
 	rLineLenght := len(requestLine)
 	if rLineLenght >= 1 {
@@ -74,7 +78,7 @@ func (_this *Request) RequestParser(conn net.Conn) (*Request, error) {
 		if _, ok := _this.Headers["Accept-Encoding"]; ok {
 			body, err := gzipPkg.Decompress(body)
 			if err != nil {
-				return nil, err
+				return  err
 			}
 			_this.Body = body
 			_this.Headers["Content-Encoding"] = "gzip"
@@ -82,6 +86,6 @@ func (_this *Request) RequestParser(conn net.Conn) (*Request, error) {
 			_this.Body = body
 		}
 	}
-	return _this, nil
+	return  nil
 }
 
