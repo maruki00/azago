@@ -30,10 +30,12 @@ func NewRouter() *Router {
 	}
 }
 
-func (_this *Router) GetEndPoint() {
+func (_this *Router) GetEndPoint(route string) {
 	var endpoint strings.Builder
-	for pattern, route := range _this.routes {
-			
+	for pattern, _ := range _this.routes {
+		endpoint.Reset()
+		endpoint.WriteString(pattern)
+
 	}
 }
 
@@ -45,11 +47,22 @@ func (_this *Router) Add(method string, pattern string, handler HttpHandler, mid
 	middle_wares := make([]HttpMiddleware, len(_this.Middlewares)+len(middlewares))
 	middle_wares = append(middle_wares, _this.Middlewares...)
 	middle_wares = append(middle_wares, middlewares...)
-	_this.routes[pattern] = &Route{
+	route := &Route{
 		Handler:     handler,
 		Method:      method,
 		Middlewares: middle_wares,
+		Params: make(map[string]any),
 	}
+
+	parts := strings.Split(pattern, "/")
+	for i,part := range parts{
+		if []rune(part)[0] != ':' {
+			continue	
+		}
+		route.Params[part[1:]] = true
+		parts[i] = "(.+)"
+	}
+	_this.routes[strings.Join(parts, "/")] = route 
 }
 
 func (_this *Router) POST(pattern string, handler HttpHandler, middlewares ...HttpMiddleware) {
