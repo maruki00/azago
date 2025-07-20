@@ -39,15 +39,23 @@ func (_this *Server) Run(addr string) {
 func (_this *Server) NewRequest(conn net.Conn) {
 	start := time.Now()
 	defer conn.Close()
-		request := request.NewRequest(conn)
-		if request == nil {
-			conn.Write([]byte(common.INTERNAL_ERROR))
-			return
-		}
-		response := response.NewResponse(request, conn)
+	request := request.NewRequest(conn)
+	if request == nil {
+		conn.Write([]byte(common.INTERNAL_ERROR))
+		return
+	}
 
+	body := ""
+	fmt.Fprintf(conn, "HTTP/1.1 200 OK\r\n")
+	fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
+	fmt.Fprintf(conn, "Content-Type: text/plain\r\n")
+	fmt.Fprintf(conn, "\r\n")
+	fmt.Fprintf(conn, body)
 
-		fmt.Printf("%+v", request)
-		response.Write(200, []byte("hello worlld"))
-		logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
+	return
+	response := response.NewResponse(request, conn)
+
+	fmt.Printf("%+v", request)
+	response.Write(200, []byte("hello worlld"))
+	logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
 }

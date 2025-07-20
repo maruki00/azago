@@ -1,14 +1,15 @@
 package request
 
 import (
+	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"net"
 
 	"github.com/maruki00/zenithgo/internal/common"
 	gzipPkg "github.com/maruki00/zenithgo/pkg/gzip"
+	readerPkg "github.com/maruki00/zenithgo/pkg/reader"
 )
 
 type Request struct {
@@ -31,10 +32,10 @@ func NewRequest(conn net.Conn) *Request {
 	return req
 }
 
+
 func (_this *Request) RequestParser(conn net.Conn) error {
-	requestBuff, err := io.ReadAll(conn)
+	requestBuff, err := readerPkg.ReadUntil(conn, []byte("\r\n\r\n"))
 	if err != nil {
-		panic(err)
 		return err
 	}
 
