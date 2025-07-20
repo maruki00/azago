@@ -32,14 +32,6 @@ func NewRequest(conn net.Conn) *Request {
 	return req
 }
 
-func (req *Request) isValidEndPoint(rgx string) bool {
-	regx, err := regexp.Compile(fmt.Sprintf("^%s$", rgx))
-	if err != nil {
-		return false
-	}
-	return regx.Match([]byte(req.EndPoint))
-}
-
 func (_this *Request) RequestParser(conn net.Conn)  error {
 	requestBuff := readerPkg.Read(conn)
 	requestInfo := bytes.Split(requestBuff, []byte(common.CRLF))

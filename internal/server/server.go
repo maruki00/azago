@@ -1,7 +1,7 @@
 package server
 
 import (
-	"log/slog"
+	"fmt"
 	"net"
 	"time"
 
@@ -48,7 +48,9 @@ func (_this *Server) NewRequest(conn net.Conn) {
 		response := response.NewResponse(request, conn)
 
 
+		fmt.Printf("%+v", request)
 		response.Write(200, []byte("hello worlld"))
+		logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
+
 	}()
-	slog.Info("request", "spend", timePkg.Since(start), "from", conn.LocalAddr().String())
 }
