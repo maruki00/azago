@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net"
 	"time"
 
@@ -45,7 +46,7 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 	}
 
 	response := response.NewResponse(request, conn)
-
+	fmt.Println(_this.GetRoutes())
 	response.Write(200, []byte("hello worlld"))
 	logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
 }
