@@ -49,9 +49,11 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 
 	response := response.NewResponse(request, conn)
 	routes := _this.GetRoutes()
-	for k, r := range routes {
-		fmt.Printf("route : %s, %+v", k, r)
-	}
+	// for k, r := range routes {
+	// 	fmt.Printf("route : %s, %+v", k, r)
+	// }
+	fmt.Println(routes)
+
 	response.Write(200, []byte("hello worlld"))
 	logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
 }

@@ -45,7 +45,6 @@ func (_this *Router) GetRoutes() Routes {
 }
 
 func (_this *Router) Add(method string, pattern string, handler HttpHandler, middlewares ...HttpMiddleware) {
-	fmt.Println("---------- : ", method, pattern)
 	middle_wares := make([]HttpMiddleware, len(_this.Middlewares)+len(middlewares))
 	middle_wares = append(middle_wares, _this.Middlewares...)
 	middle_wares = append(middle_wares, middlewares...)
