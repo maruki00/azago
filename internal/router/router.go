@@ -52,19 +52,19 @@ func (_this *Router) Add(method string, pattern string, handler HttpHandler, mid
 		Handler:     handler,
 		Method:      method,
 		Middlewares: middle_wares,
-		Params: make(map[string]any),
+		Params:      make(map[string]any),
 	}
 	parts := strings.Split(pattern, "/")
-	for i,part := range parts{
+	for i, part := range parts {
 		fmt.Println(part)
 		continue
 		if []rune(part)[0] != ':' {
-			continue	
+			continue
 		}
 		route.Params[part[1:]] = true
 		parts[i] = "(.+)"
 	}
-	_this.routes["/"+strings.Join(parts, "/")] = route 
+	_this.routes["/"+strings.Join(parts, "/")] = route
 }
 
 func (_this *Router) POST(pattern string, handler HttpHandler, middlewares ...HttpMiddleware) {
