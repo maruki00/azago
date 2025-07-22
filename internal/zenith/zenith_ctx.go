@@ -1,6 +1,4 @@
 package zenith
 
-
-type Context struct{
-	Context.Context
+type Context struct {
 }
