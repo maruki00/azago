@@ -14,7 +14,7 @@ type HttpMiddleware func()
 type Route struct {
 	Handler     HttpHandler
 	Method      string
-	Params      map[string]any
+	Params      []string
 	Middlewares []HttpMiddleware
 }
 type Routes map[string]*Route
@@ -32,7 +32,7 @@ func NewRouter() *Router {
 
 func (_this *Router) GetEndPoint(route string) {
 	var endpoint strings.Builder
-	for pattern, _ := range _this.routes {
+	for pattern := range _this.routes {
 		endpoint.Reset()
 		endpoint.WriteString(pattern)
 
@@ -51,7 +51,7 @@ func (_this *Router) Add(method string, pattern string, handler HttpHandler, mid
 		Handler:     handler,
 		Method:      method,
 		Middlewares: middle_wares,
-		Params:      make(map[string]any),
+		Params:      make([]string, 0),
 	}
 	parts := strings.Split(pattern, "/")
 	var prefix []rune
@@ -60,14 +60,14 @@ func (_this *Router) Add(method string, pattern string, handler HttpHandler, mid
 			continue
 		}
 		prefix = []rune(part)
-		if len(prefix) < 2 && prefix[0] != ':' {
+		if len(prefix) < 2 || prefix[0] != ':' {
 			continue
 		}
 
-		route.Params[part[1:]] = true
+		route.Params = append(route.Params, part[1:])
 		parts[i] = "(.+)"
 	}
-	_this.routes["/"+strings.Join(parts, "/")] = route
+	_this.routes[strings.Join(parts, "/")] = route
 }
 
 func (_this *Router) POST(pattern string, handler HttpHandler, middlewares ...HttpMiddleware) {
