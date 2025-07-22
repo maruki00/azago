@@ -57,11 +57,14 @@ func (_this *Router) Add(method string, pattern string, handler HttpHandler, mid
 	}
 	parts := strings.Split(pattern, "/")
 	for i, part := range parts {
-		fmt.Println("part : ", part)
-		continue
+		if part == "" {
+			continue
+		}
 		if []rune(part)[0] != ':' {
 			continue
 		}
+		fmt.Println("part : ", part)
+		continue
 		route.Params[part[1:]] = true
 		parts[i] = "(.+)"
 	}
