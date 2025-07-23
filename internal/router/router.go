@@ -7,9 +7,10 @@ package router
 import (
 	"strings"
 
+	"github.com/maruki00/azago/internal/zenith"
 )
 
-type HTTPHandler func(*request.Request, *any)
+type HTTPHandler func(*zenith.Request, *any)
 type HTTPMiddleware func()
 type Route struct {
 	Handler     HTTPHandler

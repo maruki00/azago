@@ -1,5 +1,5 @@
-//Package zenith 
-package zenith 
+//Package azago 
+package azago 
 
 import (
 	"bytes"

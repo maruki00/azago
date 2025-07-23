@@ -1,16 +1,14 @@
 // Package server
 package server
 
-
 import (
 	"fmt"
 	"net"
 	"time"
 
 	"github.com/maruki00/azago/internal/common"
-	"github.com/maruki00/azago/internal/http/request"
-	"github.com/maruki00/azago/internal/http/response"
 	"github.com/maruki00/azago/internal/router"
+	azago "github.com/maruki00/azago/internal/zenith"
 	logPkg "github.com/maruki00/azago/pkg/log"
 	timePkg "github.com/maruki00/azago/pkg/time"
 )
@@ -43,13 +41,13 @@ func (_this *Server) Run(addr string) {
 func (_this *Server) HandleRequest(conn net.Conn) {
 	start := time.Now()
 	defer conn.Close()
-	request := request.NewRequest(conn)
+	request := azago.NewRequest(conn)
 	if request == nil {
 		conn.Write([]byte(common.INTERNAL_ERROR))
 		return
 	}
 
-	response := response.NewResponse(request, conn)
+	response := azago.NewResponse(request, conn)
 	routes := _this.GetRoutes()
 	// for k, r := range routes {
 	// 	fmt.Printf("route : %s, %+v", k, r)
