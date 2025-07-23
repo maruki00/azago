@@ -1,4 +1,6 @@
+// Package server
 package server
+
 
 import (
 	"fmt"
