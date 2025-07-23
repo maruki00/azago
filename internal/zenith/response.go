@@ -21,7 +21,7 @@ func NewResponse(r *Request, conn net.Conn) *Response {
 	}
 }
 
-func (_this *Response) Write(status int, body []byte) {
+func (_this *Response) Write(status int, body []byte) error {
 	lenght := len(body)
 	responseBody := strings.Builder{}
 	responseBody.WriteString(fmt.Sprintf("HTTP/1.1 %d %s\r\n", status, common.Statues[status]))
@@ -39,7 +39,8 @@ func (_this *Response) Write(status int, body []byte) {
 	}
 	responseBody.WriteString("\r\n")
 	responseBody.Write(body)
-	_this.conn.Write([]byte(responseBody.String()))
+	_,err := _this.conn.Write([]byte(responseBody.String()))
+	return err
 }
 
 func (_this *Response) SetHeaders(headers map[string]string) {
