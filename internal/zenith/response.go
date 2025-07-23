@@ -1,5 +1,5 @@
-//Package response
-package response
+// Package http
+package http
 
 import (
 	"fmt"
@@ -7,11 +7,11 @@ import (
 	"strings"
 
 	"github.com/maruki00/zenithgo/internal/common"
-	"github.com/maruki00/zenithgo/internal/http/request"
+	"github.com/maruki00/zenithgo/internal/http"
 )
 
 type Response struct {
-	*request.Request
+	*http.Request
 	conn net.Conn
 }
 

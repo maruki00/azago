@@ -1,5 +1,5 @@
-//Package request
-package request
+//Package http 
+package http 
 
 import (
 	"bytes"
