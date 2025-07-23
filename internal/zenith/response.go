@@ -1,5 +1,5 @@
-// Package http
-package http
+// Package zenith
+package zenith
 
 import (
 	"fmt"
@@ -7,15 +7,14 @@ import (
 	"strings"
 
 	"github.com/maruki00/zenithgo/internal/common"
-	"github.com/maruki00/zenithgo/internal/http"
 )
 
 type Response struct {
-	*http.Request
+	*Request
 	conn net.Conn
 }
 
-func NewResponse(r *request.Request, conn net.Conn) *Response {
+func NewResponse(r *Request, conn net.Conn) *Response {
 	return &Response{
 		Request: r,
 		conn:    conn,
