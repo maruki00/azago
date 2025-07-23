@@ -7,12 +7,12 @@ import (
 	"net"
 	"time"
 
-	"github.com/maruki00/zenithgo/internal/common"
-	"github.com/maruki00/zenithgo/internal/http/request"
-	"github.com/maruki00/zenithgo/internal/http/response"
-	"github.com/maruki00/zenithgo/internal/router"
-	logPkg "github.com/maruki00/zenithgo/pkg/log"
-	timePkg "github.com/maruki00/zenithgo/pkg/time"
+	"github.com/maruki00/azago/internal/common"
+	"github.com/maruki00/azago/internal/http/request"
+	"github.com/maruki00/azago/internal/http/response"
+	"github.com/maruki00/azago/internal/router"
+	logPkg "github.com/maruki00/azago/pkg/log"
+	timePkg "github.com/maruki00/azago/pkg/time"
 )
 
 type Server struct {

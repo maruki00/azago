@@ -5,8 +5,6 @@ import (
 	"net"
 	"os"
 
-	"github.com/maruki00/zenithgo/internal/http/request"
-	"github.com/maruki00/zenithgo/internal/server"
 )
 
 var _ = net.Listen

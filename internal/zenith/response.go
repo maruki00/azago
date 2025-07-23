@@ -6,7 +6,7 @@ import (
 	"net"
 	"strings"
 
-	"github.com/maruki00/zenithgo/internal/common"
+	"github.com/maruki00/azago/internal/common"
 )
 
 type Response struct {

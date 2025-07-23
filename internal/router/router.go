@@ -7,7 +7,6 @@ package router
 import (
 	"strings"
 
-	"github.com/maruki00/zenithgo/internal/http/request"
 )
 
 type HTTPHandler func(*request.Request, *any)

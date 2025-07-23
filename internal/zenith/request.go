@@ -6,9 +6,9 @@ import (
 	"errors"
 	"net"
 
-	"github.com/maruki00/zenithgo/internal/common"
-	gzipPkg "github.com/maruki00/zenithgo/pkg/gzip"
-	readerPkg "github.com/maruki00/zenithgo/pkg/reader"
+	"github.com/maruki00/azago/internal/common"
+	gzipPkg "github.com/maruki00/azago/pkg/gzip"
+	readerPkg "github.com/maruki00/azago/pkg/reader"
 )
 
 type Request struct {
