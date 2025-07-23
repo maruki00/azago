@@ -7,10 +7,10 @@ package router
 import (
 	"strings"
 
-	"github.com/maruki00/azago/internal/zenith"
+	"github.com/maruki00/azago/internal/azago"
 )
 
-type HTTPHandler func(*zenith.Request, *any)
+type HTTPHandler func(*azago.Request, *any)
 type HTTPMiddleware func()
 type Route struct {
 	Handler     HTTPHandler
@@ -45,13 +45,13 @@ func (_this *Router) GetRoutes() Routes {
 }
 
 func (_this *Router) Add(method string, pattern string, handler HTTPHandler, middlewares ...HTTPMiddleware) {
-	middle_wares := make([]HTTPMiddleware, len(_this.Middlewares)+len(middlewares))
-	middle_wares = append(middle_wares, _this.Middlewares...)
-	middle_wares = append(middle_wares, middlewares...)
+	_midllewares := make([]HTTPMiddleware, len(_this.Middlewares)+len(middlewares))
+	_midllewares = append(_midllewares, _this.Middlewares...)
+	_midllewares = append(_midllewares, middlewares...)
 	route := &Route{
 		Handler:     handler,
 		Method:      method,
-		Middlewares: middle_wares,
+		Middlewares: _midllewares,
 		Params:      make([]string, 0),
 	}
 	parts := strings.Split(pattern, "/")
