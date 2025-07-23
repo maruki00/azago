@@ -21,7 +21,7 @@ func NewResponse(r *Request, conn net.Conn) *Response {
 	}
 }
 
-func (_this *Response) Write(status int, body []byte) error {
+func (_this *Response) Write(status int, body []byte) error{
 	lenght := len(body)
 	responseBody := strings.Builder{}
 	responseBody.WriteString(fmt.Sprintf("HTTP/1.1 %d %s\r\n", status, common.Statues[status]))
