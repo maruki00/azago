@@ -55,7 +55,6 @@ func (_this *Router) Add(method string, pattern string, handler HTTPHandler, mid
 		Method:      method,
 		Middlewares: _midllewares,
 		ParamNames:  make(map[string]uint8),
-		Params:      make(map[string]string, 0),
 	}
 	parts := strings.Split(strings.Trim(pattern, "/"), "/")
 	fmt.Println("parts : ", parts)
@@ -69,7 +68,6 @@ func (_this *Router) Add(method string, pattern string, handler HTTPHandler, mid
 			continue
 		}
 		route.ParamNames[part[1:]] = uint8(i)
-		route.Params[part[1:]] = ""
 		parts[i] = "(.+)"
 	}
 	_this.routes[strings.Join(parts, "/")] = route
