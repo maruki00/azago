@@ -17,9 +17,7 @@ type HTTPMiddleware func()
 type Route struct {
 	Handler     HTTPHandler
 	Method      string
-	//uint8 because usualy params not much
 	ParamNames  map[string]uint8
-	Params      map[string]string
 	Middlewares []HTTPMiddleware
 }
 type Routes map[string]*Route

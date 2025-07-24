@@ -1,5 +1,5 @@
-//Package azago 
-package azago 
+// Package azago
+package azago
 
 import (
 	"bytes"
@@ -17,6 +17,7 @@ type Request struct {
 	EndPoint    string
 	HTTPVersion string
 	Headers     map[string]string
+	Params      map[string]string
 	Body        []byte
 }
 
