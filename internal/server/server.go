@@ -15,7 +15,7 @@ import (
 )
 
 type Server struct {
-	*router.Router 
+	*router.Router
 }
 
 func New() *Server {
