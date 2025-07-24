@@ -4,6 +4,7 @@ package server
 import (
 	"fmt"
 	"net"
+	"strings"
 	"time"
 
 	"github.com/maruki00/azago/internal/azago"
@@ -49,8 +50,23 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 
 	response := azago.NewResponse(request, conn)
 	route := _this.GetRoute(request.EndPoint)
-	fmt.Println("route : ", route)
+	parts := strings.Split(strings.Trim(request.EndPoint, "/"), "/")
+	index := 0
+	for _, v := range parts {
+		fmt.Println(v, route.ParamNames[index])
+		if v != route.ParamNames[index] {
+			continue
+		}
+		if index >= len(parts) {
+			break
+		}
+		fmt.Println("part : ", v)
+		route.Params[route.ParamNames[index]] = v
+		index++
+	}
+	fmt.Println("route ", route)
 
 	response.Write(200, []byte("hello worlld"))
 	logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
+
 }

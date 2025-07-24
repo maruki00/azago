@@ -5,6 +5,7 @@
 package router
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -16,7 +17,9 @@ type HTTPMiddleware func()
 type Route struct {
 	Handler     HTTPHandler
 	Method      string
-	Params      []string
+	//uint8 because usualy params not much
+	ParamNames  map[string]uint8
+	Params      map[string]string
 	Middlewares []HTTPMiddleware
 }
 type Routes map[string]*Route
@@ -53,9 +56,11 @@ func (_this *Router) Add(method string, pattern string, handler HTTPHandler, mid
 		Handler:     handler,
 		Method:      method,
 		Middlewares: _midllewares,
-		Params:      make([]string, 0),
+		ParamNames:  make(map[string]uint8),
+		Params:      make(map[string]string, 0),
 	}
-	parts := strings.Split(pattern, "/")
+	parts := strings.Split(strings.Trim(pattern, "/"), "/")
+	fmt.Println("parts : ", parts)
 	var prefix []rune
 	for i, part := range parts {
 		if part == "" {
@@ -65,8 +70,8 @@ func (_this *Router) Add(method string, pattern string, handler HTTPHandler, mid
 		if len(prefix) < 2 || prefix[0] != ':' {
 			continue
 		}
-
-		route.Params = append(route.Params, part[1:])
+		route.ParamNames[part[1:]] = uint8(i)
+		route.Params[part[1:]] = ""
 		parts[i] = "(.+)"
 	}
 	_this.routes[strings.Join(parts, "/")] = route
@@ -83,12 +88,12 @@ func (_this *Router) GET(pattern string, handler HTTPHandler, middlewares ...HTT
 func (_this *Router) GetRoute(pattern string) *Route {
 	var rgx *regexp.Regexp
 	var err error
-	for k,v := range _this.routes{
+	for k, v := range _this.routes {
 		rgx, err = regexp.Compile(k)
 		if err != nil {
 			continue
 		}
-		if rgx.Match([]byte(pattern)){
+		if rgx.Match([]byte(pattern)) {
 			return v
 		}
 	}
