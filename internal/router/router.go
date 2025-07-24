@@ -5,6 +5,7 @@
 package router
 
 import (
+	"regexp"
 	"strings"
 
 	"github.com/maruki00/azago/internal/azago"
@@ -77,4 +78,19 @@ func (_this *Router) POST(pattern string, handler HTTPHandler, middlewares ...HT
 
 func (_this *Router) GET(pattern string, handler HTTPHandler, middlewares ...HTTPMiddleware) {
 	_this.Add("GET", pattern, handler, middlewares...)
+}
+
+func (_this *Router) GetRoute(pattern string) *Route {
+	var rgx *regexp.Regexp
+	var err error
+	for k,v := range _this.routes{
+		rgx, err = regexp.Compile(k)
+		if err != nil {
+			continue
+		}
+		if rgx.Match([]byte(pattern)){
+			return v
+		}
+	}
+	return nil
 }
