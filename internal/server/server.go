@@ -49,10 +49,9 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 
 	response := azago.NewResponse(request, conn)
 	routes := _this.GetRoutes()
-	// for k, r := range routes {
-	// 	fmt.Printf("route : %s, %+v", k, r)
-	// }
-	fmt.Println(routes)
+	for k, r := range routes {
+		fmt.Printf("route : %s, %+v, %+v\n", k, r, r.Params)
+	}
 
 	response.Write(200, []byte("hello worlld"))
 	logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
