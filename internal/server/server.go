@@ -2,6 +2,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"strings"
@@ -38,7 +39,7 @@ func (_this *Server) Run(addr string) {
 		go _this.HandleRequest(conn)
 	}
 }
-
+var ctx *azago.Context
 func (_this *Server) HandleRequest(conn net.Conn) {
 	start := time.Now()
 	defer conn.Close()
@@ -51,24 +52,16 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 	response := azago.NewResponse(request, conn)
 	route := _this.GetRoute(request.EndPoint)
 	parts := strings.Split(strings.Trim(request.EndPoint, "/"), "/")
-	// index := 0
-	// for _, v := range parts {
-	// 	fmt.Println(v, route.ParamNames[index])
-	// 	if v != route.ParamNames[index] {
-	// 		continue
-	// 	}
-	// 	if index >= len(parts) {
-	// 		break
-	// 	}
-	// 	fmt.Println("part : ", v)
-	// 	route.Params[route.ParamNames[index]] = v
-	// 	index++
-	// }
 
 	for k,v := range route.ParamNames {
 		request.Params[k] = parts[v] 
 	}
-
+	ctx = &azago.Context{
+		Context: context.Background(),
+		Request: request,
+		Response: response,
+	}
+	route.Handler(ctx)
 	fmt.Println("route ", route, parts, request)
 
 	response.Write(200, []byte("hello worlld"))

@@ -12,7 +12,7 @@ import (
 	"github.com/maruki00/azago/internal/azago"
 )
 
-type HTTPHandler func(*azago.Request, *any)
+type HTTPHandler func(ctx *azago.Context)
 type HTTPMiddleware func()
 type Route struct {
 	Handler     HTTPHandler
