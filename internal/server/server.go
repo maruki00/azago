@@ -64,7 +64,12 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 	// 	route.Params[route.ParamNames[index]] = v
 	// 	index++
 	// }
-	fmt.Println("route ", route, parts)
+
+	for k,v := range route.ParamNames {
+		request.Params[k] = parts[v] 
+	}
+
+	fmt.Println("route ", route, parts, request)
 
 	response.Write(200, []byte("hello worlld"))
 	logPkg.Log("spent", timePkg.Since(start), request.EndPoint)

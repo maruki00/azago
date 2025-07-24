@@ -24,6 +24,7 @@ type Request struct {
 func NewRequest(conn net.Conn) *Request {
 	req := &Request{
 		Headers: make(map[string]string),
+		Params: make(map[string]string),
 		Body:    make([]byte, 0),
 	}
 	if err := req.RequestParser(conn); err != nil {
