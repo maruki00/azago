@@ -23,7 +23,7 @@ func NewResponse(r *Request, conn net.Conn) *Response {
 
 func (_this *Response) Write(status int, body []byte) error{
 	lenght := len(body)
-	responseBody := strings.Builder{}
+	var responseBody strings.Builder
 	responseBody.WriteString(fmt.Sprintf("HTTP/1.1 %d %s\r\n", status, common.Statues[status]))
 	for header, value := range _this.Headers {
 		if header == "" || value == "" {
@@ -39,6 +39,7 @@ func (_this *Response) Write(status int, body []byte) error{
 	}
 	responseBody.WriteString("\r\n")
 	responseBody.Write(body)
+	fmt.Println("response : ", responseBody.String())
 	_,err := _this.conn.Write([]byte(responseBody.String()))
 	return err
 }
