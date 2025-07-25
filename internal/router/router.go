@@ -5,7 +5,6 @@
 package router
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -57,7 +56,6 @@ func (_this *Router) Add(method string, pattern string, handler HTTPHandler, mid
 		ParamNames:  make(map[string]uint8),
 	}
 	parts := strings.Split(strings.Trim(pattern, "/"), "/")
-	fmt.Println("parts : ", parts)
 	var prefix []rune
 	for i, part := range parts {
 		if part == "" {
