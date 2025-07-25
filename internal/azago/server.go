@@ -1,4 +1,3 @@
-// Package azago
 package azago
 
 import (
@@ -38,12 +37,12 @@ func (_this *Server) Run(addr string) {
 	}
 }
 
-var ctx *azago.Context
+var ctx *Context
 
 func (_this *Server) HandleRequest(conn net.Conn) {
 	start := time.Now()
 	defer conn.Close()
-	request := azago.NewRequest(conn)
+	request := NewRequest(conn)
 	if request == nil {
 		conn.Write([]byte(common.INTERNAL_ERROR))
 		return
@@ -56,7 +55,7 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 	for k, v := range route.ParamNames {
 		request.Params[k] = parts[v]
 	}
-	ctx = &azago.Context{
+	ctx = &Context{
 		Context:  context.Background(),
 		Request:  request,
 		Response: response,
