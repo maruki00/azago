@@ -3,7 +3,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"strings"
 	"time"
@@ -39,7 +38,9 @@ func (_this *Server) Run(addr string) {
 		go _this.HandleRequest(conn)
 	}
 }
+
 var ctx *azago.Context
+
 func (_this *Server) HandleRequest(conn net.Conn) {
 	start := time.Now()
 	defer conn.Close()
@@ -53,12 +54,12 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 	route := _this.GetRoute(request.EndPoint)
 	parts := strings.Split(strings.Trim(request.EndPoint, "/"), "/")
 
-	for k,v := range route.ParamNames {
-		request.Params[k] = parts[v] 
+	for k, v := range route.ParamNames {
+		request.Params[k] = parts[v]
 	}
 	ctx = &azago.Context{
-		Context: context.Background(),
-		Request: request,
+		Context:  context.Background(),
+		Request:  request,
 		Response: response,
 	}
 	route.Handler(ctx)

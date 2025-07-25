@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net"
 	"os"
 
@@ -16,7 +15,7 @@ func main() {
 	server := server.New()
 
 	server.POST("/ping/:id", func(r *azago.Context) {
-		fmt.Println("hello world")
+		r.WriteJSON(200, "hello world")
 	})
 	server.Run(":1234")
 
