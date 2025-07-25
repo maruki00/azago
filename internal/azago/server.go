@@ -12,12 +12,12 @@ import (
 )
 
 type Server struct {
-	*router.Router
+	*Router
 }
 
 func New() *Server {
 	return &Server{
-		Router: router.NewRouter(),
+		Router: NewRouter(),
 	}
 }
 

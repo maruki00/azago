@@ -6,14 +6,13 @@ import (
 	"os"
 
 	"github.com/maruki00/azago/internal/azago"
-	"github.com/maruki00/azago/internal/server"
 )
 
 var _ = net.Listen
 var _ = os.Exit
 
 func main() {
-	server := server.New()
+	server := azago.New()
 
 	server.POST("/ping/:id", func(r *azago.Context) {
 		var obj interface{}
