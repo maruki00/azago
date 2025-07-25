@@ -62,9 +62,5 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 		Response: response,
 	}
 	route.Handler(ctx)
-	fmt.Println("route ", route, parts, request)
-
-	response.Write(200, []byte("hello worlld"))
 	logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
-
 }

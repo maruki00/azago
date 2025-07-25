@@ -15,7 +15,7 @@ var _ = os.Exit
 func main() {
 	server := server.New()
 
-	server.POST("/ping/:id", func(r *azago.Request, a *any) {
+	server.POST("/ping/:id", func(r *azago.Context) {
 		fmt.Println("hello world")
 	})
 	server.Run(":1234")
