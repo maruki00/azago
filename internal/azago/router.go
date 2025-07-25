@@ -2,16 +2,14 @@
 // this is just a simple router
 // missing groupes and many other stuffs
 // middlewares by groups ...
-package router
+package azago
 
 import (
 	"regexp"
 	"strings"
-
-	"github.com/maruki00/azago/internal/azago"
 )
 
-type HTTPHandler func(ctx *azago.Context)
+type HTTPHandler func(ctx *Context)
 type HTTPMiddleware func()
 type Route struct {
 	Handler     HTTPHandler
