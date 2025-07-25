@@ -1,7 +1,3 @@
-// Package router
-// this is just a simple router
-// missing groupes and many other stuffs
-// middlewares by groups ...
 package azago
 
 import (
