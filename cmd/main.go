@@ -16,6 +16,7 @@ func main() {
 
 	server.POST("/ping/:id", func(r *azago.Context) {
 		r.WriteJSON(200, "hello world")
+
 	})
 	server.Run(":1234")
 

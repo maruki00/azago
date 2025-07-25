@@ -63,5 +63,5 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 		Response: response,
 	}
 	route.Handler(ctx)
-	logPkg.Log("spent", timePkg.Since(start), request.EndPoint)
+	logPkg.Log(request.Method, timePkg.Since(start), request.EndPoint)
 }
