@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net"
 	"os"
 
@@ -15,6 +16,16 @@ func main() {
 	server := server.New()
 
 	server.POST("/ping/:id", func(r *azago.Context) {
+		var obj interface{}
+		if err := r.BindJSON(obj); err != nil {
+			r.WriteJSON(400, map[string]string{
+				"status": "200",
+				"message": err.Error(),
+			})
+			return
+		}
+		id,_ := r.Params["id"]
+		fmt.Println("dev : ", id, obj)
 		r.WriteJSON(200, "hello world")
 
 	})
