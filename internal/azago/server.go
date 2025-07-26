@@ -49,6 +49,9 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 
 	response := NewResponse(request, conn)
 	route := _this.GetRoute(request.EndPoint)
+	if route.Method != request.Method{
+		response.Write(400, []byte("invalid http method")])
+	} 
 	parts := strings.Split(strings.Trim(request.EndPoint, "/"), "/")
 
 	for k, v := range route.ParamNames {
