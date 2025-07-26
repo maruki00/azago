@@ -57,11 +57,16 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 	for k, v := range route.ParamNames {
 		request.Params[k] = parts[v]
 	}
+
 	ctx = &Context{
 		Context:  context.Background(),
 		Request:  request,
 		Response: response,
 	}
+
+	for mWare := range 
+
 	route.Handler(ctx)
+	
 	logPkg.Log(request.Method, timePkg.Since(start), request.EndPoint)
 }
