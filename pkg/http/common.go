@@ -1,5 +1,5 @@
-//Package common
-package common
+package httpPkg
+
 
 
 const (

@@ -1,3 +1,0 @@
-// Package common
-package common
-
