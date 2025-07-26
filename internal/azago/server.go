@@ -50,7 +50,7 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 	response := NewResponse(request, conn)
 	route := _this.GetRoute(request.EndPoint)
 	if route.Method != request.Method{
-		response.Write(common.Statues[NOT_FOUND"], []byte("NOT FOUD"))
+		response.Write(common.Statues[NOT_FOUND"], []byte(commc))
 	} 
 	parts := strings.Split(strings.Trim(request.EndPoint, "/"), "/")
 
