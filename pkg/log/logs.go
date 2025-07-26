@@ -10,7 +10,7 @@ import (
 
 func Log(args ...string) {
 	var logLine = strings.Builder{}
-	logLine.WriteString(fmt.Sprintf("%s[LOG  ] %s", cliPkg.Gray, time.Now().Format("2006/07/01 ")))
+	logLine.WriteString(fmt.Sprintf("%s[LOG  ] %s", cliPkg.Cyan, time.Now().Format("2006/07/01 ")))
 	for _, arg := range args {
 		logLine.WriteString(arg)
 		logLine.WriteString(" ")
