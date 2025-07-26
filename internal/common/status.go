@@ -1,76 +1,150 @@
 // Package common
 package common
 
-var Statues = map[int]string{
-	//informational: 100's
-	100: "Continue",
-	101: "Switching Protocols",
-	102: "Processing",
-	103: "Early Hints",
+const (
+	// Informational: 100's
+	StatusContinue           = 100
+	StatusSwitchingProtocols = 101
+	StatusProcessing         = 102
+	StatusEarlyHints         = 103
 
-	//Success: 200's
-	200: "OK",
-	201: "Created",
-	202: "Accepted",
-	203: "Non-Authoritative Information",
-	204: "No Content",
-	205: "Reset Content",
-	206: "Partial Content",
-	207: "Multi-Status",
-	208: "Already Reported",
-	226: "IM Used",
+	// Success: 200's
+	StatusOK                         = 200
+	StatusCreated                    = 201
+	StatusAccepted                   = 202
+	StatusNonAuthoritativeInfo       = 203
+	StatusNoContent                  = 204
+	StatusResetContent               = 205
+	StatusPartialContent             = 206
+	StatusMultiStatus                = 207
+	StatusAlreadyReported            = 208
+	StatusIMUsed                     = 226
 
-	//Redirect: 300's
-	300: "Multiple Choices",
-	301: "Moved Permanently",
-	302: "Found",
-	303: "See Other",
-	304: "Not Modified",
-	305: "Use Proxy",
-	307: "Temporary Redirect",
-	308: "Permanent Redirect",
+	// Redirect: 300's
+	StatusMultipleChoices   = 300
+	StatusMovedPermanently  = 301
+	StatusFound             = 302
+	StatusSeeOther          = 303
+	StatusNotModified       = 304
+	StatusUseProxy          = 305
+	StatusTemporaryRedirect = 307
+	StatusPermanentRedirect = 308
 
-	//Client Error: 400's
-	400: "Bad Request",
-	401: "Unauthorized",
-	402: "Payment Required",
-	403: "Forbidden",
-	404: "Not Found",
-	405: "Method Not Allowed",
-	406: "Not Acceptable",
-	407: "Proxy Authentication Required",
-	408: "Request Timeout",
-	409: "Conflict",
-	410: "Gone",
-	411: "Length Required",
-	412: "Precondition Failed",
-	413: "Payload Too Large",
-	414: "URI Too Long",
-	415: "Unsupported Media Type",
-	416: "Range Not Satisfiable",
-	417: "Expectation Failed",
-	418: "I'm a teapot",
-	421: "Misdirected Request",
-	422: "Unprocessable Entity",
-	423: "Locked",
-	424: "Failed Dependency",
-	425: "Too Early",
-	426: "Upgrade Required",
-	428: "Precondition Required",
-	429: "Too Many Requests",
-	431: "Request Header Fields Too Large",
-	451: "Unavailable For Legal Reasons",
+	// Client Error: 400's
+	StatusBadRequest                   = 400
+	StatusUnauthorized                 = 401
+	StatusPaymentRequired              = 402
+	StatusForbidden                    = 403
+	StatusNotFound                     = 404
+	StatusMethodNotAllowed             = 405
+	StatusNotAcceptable                = 406
+	StatusProxyAuthRequired            = 407
+	StatusRequestTimeout               = 408
+	StatusConflict                     = 409
+	StatusGone                         = 410
+	StatusLengthRequired               = 411
+	StatusPreconditionFailed           = 412
+	StatusPayloadTooLarge              = 413
+	StatusURITooLong                   = 414
+	StatusUnsupportedMediaType         = 415
+	StatusRangeNotSatisfiable          = 416
+	StatusExpectationFailed            = 417
+	StatusTeapot                       = 418
+	StatusMisdirectedRequest           = 421
+	StatusUnprocessableEntity          = 422
+	StatusLocked                       = 423
+	StatusFailedDependency             = 424
+	StatusTooEarly                     = 425
+	StatusUpgradeRequired              = 426
+	StatusPreconditionRequired         = 428
+	StatusTooManyRequests              = 429
+	StatusRequestHeaderFieldsTooLarge = 431
+	StatusUnavailableForLegalReasons  = 451
 
-	//Server Errors: 500's
-	500: "Internal Server Error",
-	501: "Not Implemented",
-	502: "Bad Gateway",
-	503: "Service Unavailable",
-	504: "Gateway Timeout",
-	505: "HTTP Version Not Supported",
-	506: "Variant Also Negotiates",
-	507: "Insufficient Storage",
-	508: "Loop Detected",
-	510: "Not Extended",
-	511: "Network Authentication Required",
+	// Server Error: 500's
+	StatusInternalServerError           = 500
+	StatusNotImplemented                = 501
+	StatusBadGateway                    = 502
+	StatusServiceUnavailable            = 503
+	StatusGatewayTimeout                = 504
+	StatusHTTPVersionNotSupported       = 505
+	StatusVariantAlsoNegotiates         = 506
+	StatusInsufficientStorage           = 507
+	StatusLoopDetected                  = 508
+	StatusNotExtended                   = 510
+	StatusNetworkAuthenticationRequired = 511
+)
+
+var Statuses = map[int]string{
+	// Informational
+	StatusContinue:           "Continue",
+	StatusSwitchingProtocols: "Switching Protocols",
+	StatusProcessing:         "Processing",
+	StatusEarlyHints:         "Early Hints",
+
+	// Success
+	StatusOK:                   "OK",
+	StatusCreated:              "Created",
+	StatusAccepted:             "Accepted",
+	StatusNonAuthoritativeInfo: "Non-Authoritative Information",
+	StatusNoContent:            "No Content",
+	StatusResetContent:         "Reset Content",
+	StatusPartialContent:       "Partial Content",
+	StatusMultiStatus:          "Multi-Status",
+	StatusAlreadyReported:      "Already Reported",
+	StatusIMUsed:               "IM Used",
+
+	// Redirect
+	StatusMultipleChoices:   "Multiple Choices",
+	StatusMovedPermanently:  "Moved Permanently",
+	StatusFound:             "Found",
+	StatusSeeOther:          "See Other",
+	StatusNotModified:       "Not Modified",
+	StatusUseProxy:          "Use Proxy",
+	StatusTemporaryRedirect: "Temporary Redirect",
+	StatusPermanentRedirect: "Permanent Redirect",
+
+	// Client Error
+	StatusBadRequest:                   "Bad Request",
+	StatusUnauthorized:                 "Unauthorized",
+	StatusPaymentRequired:              "Payment Required",
+	StatusForbidden:                    "Forbidden",
+	StatusNotFound:                     "Not Found",
+	StatusMethodNotAllowed:             "Method Not Allowed",
+	StatusNotAcceptable:                "Not Acceptable",
+	StatusProxyAuthRequired:            "Proxy Authentication Required",
+	StatusRequestTimeout:               "Request Timeout",
+	StatusConflict:                     "Conflict",
+	StatusGone:                         "Gone",
+	StatusLengthRequired:               "Length Required",
+	StatusPreconditionFailed:           "Precondition Failed",
+	StatusPayloadTooLarge:              "Payload Too Large",
+	StatusURITooLong:                   "URI Too Long",
+	StatusUnsupportedMediaType:         "Unsupported Media Type",
+	StatusRangeNotSatisfiable:          "Range Not Satisfiable",
+	StatusExpectationFailed:            "Expectation Failed",
+	StatusTeapot:                       "I'm a teapot",
+	StatusMisdirectedRequest:           "Misdirected Request",
+	StatusUnprocessableEntity:          "Unprocessable Entity",
+	StatusLocked:                       "Locked",
+	StatusFailedDependency:             "Failed Dependency",
+	StatusTooEarly:                     "Too Early",
+	StatusUpgradeRequired:              "Upgrade Required",
+	StatusPreconditionRequired:         "Precondition Required",
+	StatusTooManyRequests:              "Too Many Requests",
+	StatusRequestHeaderFieldsTooLarge: "Request Header Fields Too Large",
+	StatusUnavailableForLegalReasons:  "Unavailable For Legal Reasons",
+
+	// Server Error
+	StatusInternalServerError:           "Internal Server Error",
+	StatusNotImplemented:                "Not Implemented",
+	StatusBadGateway:                    "Bad Gateway",
+	StatusServiceUnavailable:            "Service Unavailable",
+	StatusGatewayTimeout:                "Gateway Timeout",
+	StatusHTTPVersionNotSupported:       "HTTP Version Not Supported",
+	StatusVariantAlsoNegotiates:         "Variant Also Negotiates",
+	StatusInsufficientStorage:           "Insufficient Storage",
+	StatusLoopDetected:                  "Loop Detected",
+	StatusNotExtended:                   "Not Extended",
+	StatusNetworkAuthenticationRequired: "Network Authentication Required",
 }
