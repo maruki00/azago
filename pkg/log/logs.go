@@ -10,8 +10,7 @@ import (
 
 func Log(args ...string) {
 	var logLine = strings.Builder{}
-	logLine.WriteString("[azago] ")
-	logLine.WriteString(fmt.Sprintf("%s[mazago] %s", cliPkg.Cyan, time.Now().Format("2006/07/01 ")))
+	logLine.WriteString(fmt.Sprintf("%s[LOG  ] %s", cliPkg.Gray, time.Now().Format("2006/07/01 ")))
 	for _, arg := range args {
 		logLine.WriteString(arg)
 		logLine.WriteString(" ")
@@ -21,7 +20,7 @@ func Log(args ...string) {
 
 func Error(args ...string) {
 	var logLine = strings.Builder{}
-	logLine.WriteString(fmt.Sprintf("%s[mazago] %s", cliPkg.Red, time.Now().Format("2006/07/01 ")))
+	logLine.WriteString(fmt.Sprintf("%s[ERROR] %s", cliPkg.Red, time.Now().Format("2006/07/01 ")))
 	for _, arg := range args {
 		logLine.WriteString(arg)
 		logLine.WriteString(" ")
@@ -30,13 +29,15 @@ func Error(args ...string) {
 	println(logLine.String())
 }
 
+
 func Info(args ...string) {
 	var logLine = strings.Builder{}
-	logLine.WriteString("[azago] ")
-	logLine.WriteString(time.Now().Format("2006/07/01 "))
+	logLine.WriteString(fmt.Sprintf("%s[INFO ] %s", cliPkg.Blue, time.Now().Format("2006/07/01 ")))
 	for _, arg := range args {
 		logLine.WriteString(arg)
 		logLine.WriteString(" ")
 	}
+	logLine.WriteString(cliPkg.Reset)
 	println(logLine.String())
 }
+

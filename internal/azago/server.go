@@ -62,6 +62,9 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 		Request:  request,
 		Response: response,
 	}
+	logPkg.Error("hrllo world", "asfdga", "sdfgsdf")
+	logPkg.Info("hrllo world", "asfdga", "sdfgsdf")
+	logPkg.Log("hrllo world", "asfdga", "sdfgsdf")
 	route.Handler(ctx)
 	logPkg.Log(request.Method, timePkg.Since(start), request.EndPoint)
 }
