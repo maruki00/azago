@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"os"
-	"runtime/pprof"
 
+	"github.com/pkg/profile"
 	"github.com/maruki00/azago/internal/azago"
 )
 
@@ -15,15 +14,8 @@ var _ = os.Exit
 
 func main() {
 
-	f, err := os.Create("cpu.prof")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close() 
-	if err := pprof.StartCPUProfile(f); err != nil {
-		log.Fatal(err)
-	}
-	defer pprof.StopCPUProfile() 
+	defer profile.Start(profile.CPUProfile, profile.ProfilePath(".")).Stop()
+
 	server := azago.New()
 
 	server.POST("/ping/:id", func(r *azago.Context) {
