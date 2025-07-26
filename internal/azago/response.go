@@ -39,7 +39,6 @@ func (_this *Response) Write(status int, body []byte) error{
 	}
 	responseBody.WriteString("\r\n")
 	responseBody.Write(body)
-	fmt.Println("response : ", responseBody.String())
 	_,err := _this.conn.Write([]byte(responseBody.String()))
 	return err
 }

@@ -5,16 +5,20 @@ import (
 	"net"
 	"os"
 
-	"github.com/pkg/profile"
 	"github.com/maruki00/azago/internal/azago"
+	"github.com/pkg/profile"
+	"go.uber.org/automaxprocs/maxprocs"
 )
 
 var _ = net.Listen
 var _ = os.Exit
 
 func main() {
-
-	defer profile.Start(profile.CPUProfile, profile.ProfilePath(".")).Stop()
+	_,err := maxprocs.Set()
+	if err != nil {
+		panic(err)
+	}
+	defer profile.Start(profile.TraceProfile, profile.ProfilePath(".")).Stop()
 
 	server := azago.New()
 
