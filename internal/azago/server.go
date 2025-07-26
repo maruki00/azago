@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/maruki00/azago/internal/common"
+	httpPkg "github.com/maruki00/azago/pkg/http"
 	logPkg "github.com/maruki00/azago/pkg/log"
 	timePkg "github.com/maruki00/azago/pkg/time"
 )
@@ -43,14 +43,14 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 	defer conn.Close()
 	request := NewRequest(conn)
 	if request == nil {
-		conn.Write([]byte(common.INTERNAL_ERROR))
+		conn.Write([]byte(httpPkg.INTERNAL_ERROR))
 		return
 	}
 
 	response := NewResponse(request, conn)
 	route := _this.GetRoute(request.EndPoint)
 	if route.Method != request.Method{
-		response.Write( common.StatusNotFound, []byte("Route Not Found"))
+		response.Write( httpPkg.StatusNotFound, []byte("Route Not Found"))
 	} 
 	parts := strings.Split(strings.Trim(request.EndPoint, "/"), "/")
 

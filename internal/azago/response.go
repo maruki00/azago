@@ -6,7 +6,7 @@ import (
 	"net"
 	"strings"
 
-	"github.com/maruki00/azago/internal/common"
+	httpPkg "github.com/maruki00/azago/pkg/http"
 )
 
 type Response struct {
@@ -24,7 +24,7 @@ func NewResponse(r *Request, conn net.Conn) *Response {
 func (_this *Response) Write(status int, body []byte) error{
 	lenght := len(body)
 	var responseBody strings.Builder
-	responseBody.WriteString(fmt.Sprintf("HTTP/1.1 %d %s\r\n", status, common.GetHttpStatus(status)))
+	responseBody.WriteString(fmt.Sprintf("HTTP/1.1 %d %s\r\n", status, httpPkg.GetHttpStatus(status)))
 	for header, value := range _this.Headers {
 		if header == "" || value == "" {
 			continue

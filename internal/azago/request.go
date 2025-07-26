@@ -6,8 +6,8 @@ import (
 	"errors"
 	"net"
 
-	"github.com/maruki00/azago/internal/common"
 	gzipPkg "github.com/maruki00/azago/pkg/gzip"
+	httpPkg "github.com/maruki00/azago/pkg/http"
 	readerPkg "github.com/maruki00/azago/pkg/reader"
 )
 
@@ -39,7 +39,7 @@ func (_this *Request) RequestParser(conn net.Conn) error {
 		return err
 	}
 
-	requestInfo := bytes.Split(requestBuff, []byte(common.CRLF))
+	requestInfo := bytes.Split(requestBuff, []byte(httpPkg.CRLF))
 	if len(requestInfo) == 0 {
 		return errors.New("request is empty")
 	}
