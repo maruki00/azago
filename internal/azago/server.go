@@ -64,7 +64,17 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 		Response: response,
 	}
 
-	for mWare := range 
+	var err error
+	for _, mWare := range _this.Middlewares{
+		err = mWare(ctx) 
+		if err != nil{
+			break
+		}
+	} 
+
+	if err!= nil {
+		return
+	}
 
 	route.Handler(ctx)
 	
