@@ -6,7 +6,7 @@ import (
 )
 
 type HTTPHandler func(ctx *Context)
-type HTTPMiddleware func()
+type HTTPMiddleware func(ctx *Context) error 
 type Route struct {
 	Handler     HTTPHandler
 	Method      string
