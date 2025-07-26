@@ -41,3 +41,14 @@ func Info(args ...string) {
 	println(logLine.String())
 }
 
+func Success(args ...string) {
+	var logLine = strings.Builder{}
+	logLine.WriteString(fmt.Sprintf("%s[INFO]  %s", cliPkg.Green, time.Now().Format("2006/07/01 ")))
+	for _, arg := range args {
+		logLine.WriteString(arg)
+		logLine.WriteString(" ")
+	}
+	logLine.WriteString(cliPkg.Reset)
+	println(logLine.String())
+}
+
