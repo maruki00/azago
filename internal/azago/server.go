@@ -49,9 +49,9 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 
 	response := NewResponse(request, conn)
 	route := _this.GetRoute(request.EndPoint)
-	if route.Method != request.Method{
-		response.Write( httpPkg.StatusNotFound, []byte("Route Not Found"))
-	} 
+	if route.Method != request.Method {
+		response.Write(httpPkg.StatusNotFound, []byte("Route Not Found"))
+	}
 	parts := strings.Split(strings.Trim(request.EndPoint, "/"), "/")
 
 	for k, v := range route.ParamNames {
@@ -65,18 +65,18 @@ func (_this *Server) HandleRequest(conn net.Conn) {
 	}
 
 	var err error
-	for _, mWare := range _this.Middlewares{
-		err = mWare(ctx) 
-		if err != nil{
+	for _, mWare := range _this.Middlewares {
+		err = mWare(ctx)
+		if err != nil {
 			break
 		}
-	} 
+	}
 
-	if err!= nil {
+	if err != nil {
 		return
 	}
 
 	route.Handler(ctx)
-	
+
 	logPkg.Log(request.Method, timePkg.Since(start), request.EndPoint)
 }
