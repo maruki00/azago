@@ -63,16 +63,18 @@ func NewRouter() *Router {
 func (r *Router) AddRoute(path string, handler HTTPFunc) {
 	parts := strings.Split(strings.Trim(path, "/"), "/")
 	currentNode := r.root
-
+	var isWildcard bool
+	var isParam bool
 	for _, part := range parts {
-		isWildcard := strings.HasPrefix(part, ":")
+		isWildcard = part == "*"
+		isParam = strings.HasPrefix(part, ":")
 
 		childNode := currentNode.findChild(part)
 
 		if childNode == nil {
 			childNode = currentNode.findWildcardChild()
 			if childNode == nil || childNode.part != part {
-				childNode = currentNode.addChild(part, isWildcard)
+				childNode = currentNode.addChild(part, isParam, isWildcard)
 			}
 		}
 		currentNode = childNode
@@ -94,7 +96,6 @@ func (r *Router) Match(path string) (HTTPFunc, params) {
 				break
 			}
 		}
-
 		if !foundChild {
 			for _, child := range currentNode.children {
 				if child.isWildcard {
