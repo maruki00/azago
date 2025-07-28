@@ -21,10 +21,11 @@ func newRootNode() *Route {
 	}
 }
 
-func (n *Route) addChild(part string, isWildcard bool) *Route {
+func (n *Route) addChild(part string, isParam, isWildcard bool) *Route {
 	child := &Route{
 		part:       part,
 		isWildcard: isWildcard,
+		isParam:    isParam,
 		children:   make([]*Route, 0),
 	}
 	n.children = append(n.children, child)
