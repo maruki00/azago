@@ -14,6 +14,7 @@ type Route struct {
 }
 
 func newRootNode() *Route {
+	//root Route
 	return &Route{
 		part:     "/",
 		children: make([]*Route, 0),
