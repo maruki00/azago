@@ -21,6 +21,9 @@ func NewRoute(Part string, isPrm,isWCard bool)*Route{
 type Router struct {
 	Root *Route
 }
+func NewRouter() *Router {
+
+}
 
 
 
@@ -28,8 +31,7 @@ type Router struct {
 
 
 
-
-
+:
 // type Route struct {
 // 	Handler     HTTPHandler
 // 	Method      string
