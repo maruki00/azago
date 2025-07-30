@@ -1,12 +1,16 @@
 package azago
 
-import (
-	"regexp"
-	"strings"
-)
-
 type HTTPHandler func(ctx *Context)
 type HTTPMiddleware func(ctx *Context) error
+type Route struct {
+	Part       string
+	Handler    HTTPHandler
+	IsParam    bool // is :id
+	IsWildCard bool // is *
+}
+type Router struct {
+	Root *Route
+}
 
 // type Route struct {
 // 	Handler     HTTPHandler
