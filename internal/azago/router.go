@@ -4,13 +4,31 @@ type HTTPHandler func(ctx *Context)
 type HTTPMiddleware func(ctx *Context) error
 type Route struct {
 	Part       string
-	Handler    HTTPHandler
-	IsParam    bool // is :id
-	IsWildCard bool // is *
+	Handler    map[string]HTTPHandler
+	Childs     []*Route
+	IsParam    bool
+	IsWildCard bool
+}
+func NewRoute(Part string, isPrm,isWCard bool)*Route{
+	return &Route{
+		Handler: make(map[string]HTTPHandler),
+		Childs: make([]*Route,0,1),
+		Part: Part,
+		IsParam: isPrm,
+		IsWildCard: isWCard,
+	}
 }
 type Router struct {
 	Root *Route
 }
+
+
+
+
+
+
+
+
 
 // type Route struct {
 // 	Handler     HTTPHandler
