@@ -22,9 +22,41 @@ type Router struct {
 	Root *Route
 }
 func NewRouter() *Router {
-
+	return nil
 }
 
+func (_this *Router) GetEndPoint(route string) {
+}
+
+func (_this *Router) GetRoutes() any {
+	return nil
+}
+
+func (_this *Router) Add(method string, pattern string, handler HTTPHandler, middlewares ...HTTPMiddleware) {
+}
+
+func (_this *Router) POST(pattern string, handler HTTPHandler, middlewares ...HTTPMiddleware) {
+	_this.Add("POST", pattern, handler, middlewares...)
+}
+
+func (_this *Router) GET(pattern string, handler HTTPHandler, middlewares ...HTTPMiddleware) {
+	_this.Add("GET", pattern, handler, middlewares...)
+}
+
+func (_this *Router) GetRoute(pattern string) *Route {
+	var rgx *regexp.Regexp
+	var err error
+	for k, v := range _this.routes {
+		rgx, err = regexp.Compile(k)
+		if err != nil {
+			continue
+		}
+		if rgx.Match([]byte(pattern)) {
+			return v
+		}
+	}
+	return nil
+}
 
 
 
