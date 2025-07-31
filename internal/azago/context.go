@@ -15,7 +15,7 @@ type Context struct {
 
 func (_this *Context) BindJSON(obj any) error {
 	if err := json.Unmarshal(_this.Body, &obj); err != nil {
-		return fmt.Errorf("could not parse the json : %v", err)
+		return fmt.Errorf("ctx, could not parse the json : %v", err)
 	}
 	return nil
 }
