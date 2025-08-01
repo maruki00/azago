@@ -13,6 +13,9 @@ type Context struct {
 	*Response
 }
 
+func (_this *Context) Write(status int, body []byte)error {
+	return _this.Response.Write(status, body)
+}
 func (_this *Context) BindJSON(obj any) error {
 	if err := json.Unmarshal(_this.Body, &obj); err != nil {
 		return fmt.Errorf("ctx, could not parse the json : %v", err)
@@ -30,3 +33,4 @@ func (_this *Context) WriteJSON(status int, obj any) error {
 	}
 	return nil
 }
+
