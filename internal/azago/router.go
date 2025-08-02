@@ -26,6 +26,7 @@ func NewRouter() *Router {
 }
 
 func (_this *Router) GetEndPoint(route string) {
+	parts := strings.Split(route, "/")
 }
 
 func (_this *Router) GetRoutes() any {
