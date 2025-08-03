@@ -29,8 +29,8 @@ func (_this *Router) GetEndPoint(route string) {
 	parts := strings.Split(route, "/")
 }
 
-func (_this *Router) GetRoutes() any {
-	return nil
+func (_this *Router) GetRoutes() *Router {
+	return _this
 }
 
 func (_this *Router) Add(method string, pattern string, handler HTTPHandler, middlewares ...HTTPMiddleware) {
