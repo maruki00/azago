@@ -43,6 +43,7 @@ func (_this *Router) GET(pattern string, handler HTTPHandler, middlewares ...HTT
 }
 
 func (_this *Router) GetRoute(pattern string) *Route {
+	parts := strings.Split(pattern, "/")
 	return nil
 }
 
