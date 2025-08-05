@@ -37,6 +37,9 @@ func (_this *Router) Add(method string, pattern string, handler HTTPHandler, mid
 }
 
 func (_this *Router) POST(pattern string, handler HTTPHandler, middlewares ...HTTPMiddleware) {
+	if pattern==""{
+		return
+	}
 }
 
 func (_this *Router) GET(pattern string, handler HTTPHandler, middlewares ...HTTPMiddleware) {
