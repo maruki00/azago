@@ -22,7 +22,11 @@ type Router struct {
 	Root *Route
 }
 func NewRouter() *Router {
-	return nil
+	return &Router{
+		Root: &Route{
+			Part: "/"
+		}
+	}
 }
 
 func (_this *Router) GetEndPoint(route string) {
